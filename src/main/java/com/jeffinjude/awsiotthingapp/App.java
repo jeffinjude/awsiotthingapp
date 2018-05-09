@@ -9,15 +9,12 @@ import com.amazonaws.services.iot.client.AWSIotMessage;
 import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.amazonaws.services.iot.client.AWSIotQos;
 import com.amazonaws.services.iot.client.AWSIotTopic;
+
 import com.jeffinjude.awsiotthingapp.SampleUtil.KeyStorePasswordPair;
 
-/**
- * Hello world!
- *
- */
 public class App {
-	private static final String Topic = "jeffin_topics/iotthing";
-	private static final AWSIotQos TopicQos = AWSIotQos.QOS0;
+	private static final String Topic = "jeffin_topics/iotthing"; /* The topic to which the iot device publishes messages. */
+	private static final AWSIotQos TopicQos = AWSIotQos.QOS0; /* The AWS IOT QOS config. */
 
 	private static AWSIotMqttClient awsIotClient;
 
@@ -33,15 +30,15 @@ public class App {
 		}
 
 		public void run() {
-			long counter = 1;
+
 			Random rn = new Random();
 			int randomNum = rn.nextInt(100);
 			String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
-			while (true) {
-				randomNum = rn.nextInt(100);
-				timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-				String payload = "{ \"temperature\":" + randomNum + ", \"timestamp\":\"" + timeStamp + "\"}";
+			while (true) { // Keep publishing messages to topic.
+				randomNum = rn.nextInt(100); // Selects a sample number between 0 and 100.
+				timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()); // get current timestamp.
+				String payload = "{\"temperature\":" + randomNum + ", \"timestamp\":\"" + timeStamp + "\"}";
 				AWSIotMessage message = new NonBlockingPublishListener(Topic, TopicQos, payload);
 				try {
 					awsIotClient.publish(message);
